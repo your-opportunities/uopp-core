@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: uopp-core
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: user
+    password: password
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/uopp_core_database
+    username: root
+    password: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+application:
+  rabbitmq:
+    processed-queue: processed_message_queue
+    consumer:
+      simple:
+        retry:
+          max-attempts: 1
+
+    exchange: notifications
+    routing-key:
+      email: email-key
+      telegram: telegram-key

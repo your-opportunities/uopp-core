@@ -1,0 +1,13 @@
+version: '3.9'
+
+services:
+  mysql:
+    container_name: uopp-core-mysql
+    image: mysql:8.0.32
+    restart: unless-stopped
+    environment:
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=uopp_core_database
+    ports:
+      - "3306:3306"
