@@ -10,10 +10,13 @@ import ed.uopp.uoppcore.repository.OpportunityRepository;
 import ed.uopp.uoppcore.service.OpportunityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,8 +49,13 @@ public class DefaultOpportunityService implements OpportunityService {
     }
 
     @Override
-    public List<Opportunity> findOpportunities(String fullText, List<String> categories, Boolean isAsap, List<String> formats) {
-        return opportunityRepository.findWithFilters(fullText, categories, isAsap, formats);
+    public Page<Opportunity> findOpportunities(String fullText, List<String> categories, Boolean isAsap, List<String> formats, Pageable pageable) {
+        return opportunityRepository.findWithFilters(fullText, categories, isAsap, formats, pageable);
+    }
+
+    @Override
+    public Optional<Opportunity> findOpportunityByUuid(UUID uuid) {
+        return opportunityRepository.findByUuid(uuid);
     }
 
     @Override

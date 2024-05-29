@@ -6,6 +6,8 @@ import ed.uopp.uoppcore.entity.Opportunity;
 import ed.uopp.uoppcore.entity.OpportunityStatus;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -54,12 +56,12 @@ public interface OpportunityRepository extends JpaRepository<Opportunity, Long>,
         };
     }
 
-    default List<Opportunity> findWithFilters(String text, List<String> categories, Boolean isAsap, List<String> formats) {
+    default Page<Opportunity> findWithFilters(String text, List<String> categories, Boolean isAsap, List<String> formats, Pageable pageable) {
         Specification<Opportunity> spec = Specification.where(hasCategory(categories))
                 .and(hasFormat(formats))
                 .and(isAsap(isAsap))
                 .and(fullTextSearch(text));
-        return findAll(spec);
+        return findAll(spec, pageable);
     }
 
     Optional<Opportunity> findByUuid(UUID uuid);

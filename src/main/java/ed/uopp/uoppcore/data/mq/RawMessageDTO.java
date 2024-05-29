@@ -1,10 +1,10 @@
-package ed.uopp.uoppcore.data;
+package ed.uopp.uoppcore.data.mq;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
-public record RawMessageData(
+public record RawMessageDTO(
 
         @JsonProperty("post_creation_time")
         Date postCreationTime,

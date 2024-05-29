@@ -1,8 +1,8 @@
-package ed.uopp.uoppcore.data;
+package ed.uopp.uoppcore.data.mq;
 
 import java.util.List;
 
-public record ProcessedMessageData(
+public record ProcessedMessageDTO(
         String title,
         List<String> categories,
         String format,

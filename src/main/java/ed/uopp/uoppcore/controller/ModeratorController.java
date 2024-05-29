@@ -1,6 +1,6 @@
 package ed.uopp.uoppcore.controller;
 
-import ed.uopp.uoppcore.data.OpportunityStatusData;
+import ed.uopp.uoppcore.data.http.OpportunityStatusDTO;
 import ed.uopp.uoppcore.entity.OpportunityStatus;
 import ed.uopp.uoppcore.service.OpportunityService;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,10 @@ public class ModeratorController {
     private final OpportunityService opportunityService;
 
     @PostMapping("/approve")
-    public ResponseEntity<OpportunityStatus> approveOpportunity(@RequestBody OpportunityStatusData opportunityStatusData) {
+    public ResponseEntity<OpportunityStatus> approveOpportunity(@RequestBody OpportunityStatusDTO opportunityStatusDTO) {
         return ResponseEntity.ok(opportunityService.updateStatus(
-                opportunityStatusData.uuid(),
-                OpportunityStatus.valueOf(opportunityStatusData.opportunityStatus())
+                opportunityStatusDTO.uuid(),
+                OpportunityStatus.valueOf(opportunityStatusDTO.opportunityStatus())
         ));
     }
 

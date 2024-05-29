@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -45,5 +46,8 @@ public class Subscription {
 
     @Column
     private Boolean isAsap;
+
+    @Column(nullable = false)
+    private UUID uuid;
 
 }

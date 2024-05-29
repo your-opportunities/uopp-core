@@ -1,6 +1,6 @@
 package ed.uopp.uoppcore.messaging.consumer;
 
-import ed.uopp.uoppcore.data.FullMessageData;
+import ed.uopp.uoppcore.data.mq.FullMessageDTO;
 import ed.uopp.uoppcore.messaging.processor.OpportunityMessageProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class OpportunityMessageConsumer {
 
     @Retryable(retryFor = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 1000))
     @RabbitListener(queues = "${application.rabbitmq.processed-queue}")
-    public void consume(FullMessageData message) {
+    public void consume(FullMessageDTO message) {
         log.info("Received message: {}", message);
 
         opportunityMessageProcessor.processOpportunityMessage(message);

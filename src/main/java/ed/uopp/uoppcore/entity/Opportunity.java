@@ -52,7 +52,10 @@ public class Opportunity {
     private UUID uuid;
 
     @Column(nullable = false)
-    private String source;
+    private String sourceName;
+
+    @Column(nullable = false)
+    private String sourceLink;
 
     @Column(nullable = false)
     private LocalDateTime postCreatedDatetime;

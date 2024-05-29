@@ -31,3 +31,9 @@ application:
     routing-key:
       email: email-key
       telegram: telegram-key
+  jobs:
+    subscriptionJobEnabled: false
+
+springdoc:
+  api-docs:
+    path: /api-docs

@@ -1,9 +1,9 @@
 package ed.uopp.uoppcore.messaging.processor;
 
-import ed.uopp.uoppcore.data.FullMessageData;
+import ed.uopp.uoppcore.data.mq.FullMessageDTO;
 
 public interface OpportunityMessageProcessor {
 
-    void processOpportunityMessage(FullMessageData fullMessageData);
+    void processOpportunityMessage(FullMessageDTO fullMessageDTO);
 
 }

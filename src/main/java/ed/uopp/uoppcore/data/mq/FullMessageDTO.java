@@ -1,12 +1,12 @@
-package ed.uopp.uoppcore.data;
+package ed.uopp.uoppcore.data.mq;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record FullMessageData(
+public record FullMessageDTO(
         @JsonProperty("raw_message_data")
-        RawMessageData rawMessageData,
+        RawMessageDTO rawMessageDTO,
         @JsonProperty("processed_message_data")
-        ProcessedMessageData processedMessageData
+        ProcessedMessageDTO processedMessageDTO
 ) {
 }

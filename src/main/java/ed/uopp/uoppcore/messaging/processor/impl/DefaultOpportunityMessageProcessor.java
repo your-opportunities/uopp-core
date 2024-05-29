@@ -1,6 +1,6 @@
 package ed.uopp.uoppcore.messaging.processor.impl;
 
-import ed.uopp.uoppcore.data.FullMessageData;
+import ed.uopp.uoppcore.data.mq.FullMessageDTO;
 import ed.uopp.uoppcore.entity.OpportunityStatus;
 import ed.uopp.uoppcore.entity.Category;
 import ed.uopp.uoppcore.entity.Format;
@@ -25,14 +25,15 @@ import static ed.uopp.uoppcore.util.DateToLocalDateTimeUtil.getLocalDateTime;
 @Component
 public class DefaultOpportunityMessageProcessor implements OpportunityMessageProcessor {
 
+    public static final String TELEGRAM_URL = "https://web.telegram.org/a/#"; // todo: move to config
     private final CategoryService categoryService;
     private final FormatService formatService;
     private final OpportunityService opportunityService;
     private final NotificationService notificationService;
 
     @Override
-    public void processOpportunityMessage(FullMessageData fullMessageData) {
-        Opportunity opportunity = convertToOpportunity(fullMessageData);
+    public void processOpportunityMessage(FullMessageDTO fullMessageDTO) {
+        Opportunity opportunity = convertToOpportunity(fullMessageDTO);
         Opportunity savedOpportunity = opportunityService.save(opportunity);
         log.info("Processed and saved opportunity");
 
@@ -43,9 +44,9 @@ public class DefaultOpportunityMessageProcessor implements OpportunityMessagePro
 
 
     // TODO: refactor - extract logic
-    private Opportunity convertToOpportunity(FullMessageData fullMessageData) {
-        var rawMessageData = fullMessageData.rawMessageData();
-        var processedMessageData = fullMessageData.processedMessageData();
+    private Opportunity convertToOpportunity(FullMessageDTO fullMessageDTO) {
+        var rawMessageData = fullMessageDTO.rawMessageDTO();
+        var processedMessageData = fullMessageDTO.processedMessageDTO();
 
         Set<Category> categories = new HashSet<>();
         processedMessageData.categories().forEach(categoryName -> {
@@ -60,7 +61,8 @@ public class DefaultOpportunityMessageProcessor implements OpportunityMessagePro
         opportunity.setFormats(Set.of(format));
         opportunity.setIsAsap(processedMessageData.asap());
         opportunity.setDescription(rawMessageData.messageText());
-        opportunity.setSource(rawMessageData.channelName());
+        opportunity.setSourceName(rawMessageData.channelName());
+        opportunity.setSourceLink(TELEGRAM_URL + rawMessageData.channelId());
         opportunity.setPostCreatedDatetime(getLocalDateTime(rawMessageData.postCreationTime()));
         opportunity.setPostScrapperDatetime(getLocalDateTime(rawMessageData.scrappedCreationTime()));
         opportunity.setUuid(UUID.randomUUID());
