@@ -1,13 +1,34 @@
 version: '3.9'
 
 services:
+  uopp-core-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: uopp-core-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
   mysql:
     container_name: uopp-core-mysql
-    image: mysql:8.0.32
+    image: mysql:8.0.33
     restart: unless-stopped
     environment:
-      - MYSQL_PASSWORD=root
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_DATABASE=uopp_core_database
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: uopp_core_database
     ports:
       - "3306:3306"
+    volumes:
+      - ./data/sql-init/db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: "user"
+      RABBITMQ_DEFAULT_PASS: "password"
