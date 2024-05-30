@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 @Service
 public class DefaultFormatService implements FormatService {
 
-    public static final String NO_FORMAT_WITH_NAME_FOUND = "No format with name %s found";
+    public static final String NO_FORMAT_WITH_NAME_FOUND = "No format with name '%s' found";
     private final FormatRepository formatRepository;
 
     @Override

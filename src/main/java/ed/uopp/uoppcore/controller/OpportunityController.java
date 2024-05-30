@@ -51,7 +51,7 @@ public class OpportunityController implements OpportunityOperations {
     public ResponseEntity<OpportunityDTO> findOpportunity(@PathVariable String uuid) {
         UUID uuidVal = UUID.fromString(uuid);
         Opportunity opportunity = opportunityService.findOpportunityByUuid(uuidVal).orElseThrow(
-                () -> new NoSuchElementException(String.format("No opportunity with uuid {}", uuid))
+                () -> new NoSuchElementException(String.format("No opportunity with uuid '{}'", uuid))
         );
 
         return ResponseEntity.ok(opportunityMapper.toOpportunityData(opportunity));

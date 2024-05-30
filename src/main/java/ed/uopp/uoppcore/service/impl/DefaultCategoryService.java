@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 @Service
 public class DefaultCategoryService implements CategoryService {
 
-    public static final String NO_CATEGORY_WITH_NAME_FOUND = "No category with name %s found";
+    public static final String NO_CATEGORY_WITH_NAME_FOUND = "No category with name '%s' found";
     private final CategoryRepository categoryRepository;
 
     @Override
