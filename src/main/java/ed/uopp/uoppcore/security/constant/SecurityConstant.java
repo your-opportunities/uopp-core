@@ -16,7 +16,7 @@ public final class SecurityConstant {
             "/swagger-ui/**",
             "/opportunities/**",
             "/moderator/sign-in",
-            "/subscriptions**"
+            "/subscriptions/**"
     };
 
     public static final long EXPIRATION_TIME = 432_000_000; // 5 days

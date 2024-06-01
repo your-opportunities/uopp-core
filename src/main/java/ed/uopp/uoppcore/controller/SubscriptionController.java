@@ -11,14 +11,12 @@ import ed.uopp.uoppcore.service.FormatService;
 import ed.uopp.uoppcore.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,14 +27,39 @@ public class SubscriptionController implements SubscriptionOperations {
     private final CategoryService categoryService;
     private final FormatService formatService;
 
-
     @PostMapping
     @Override
-    public ResponseEntity<Void> createSubscription(@RequestBody SubscriptionDTO subscriptionDTO) {
-        subscriptionService.save(toSubscription(subscriptionDTO));
+    public ResponseEntity<UUID> createSubscription(@RequestBody SubscriptionDTO subscriptionDTO) {
+        return ResponseEntity.ok(subscriptionService.save(toSubscription(subscriptionDTO)));
+    }
+
+    @GetMapping("/{uuid}")
+    @Override
+    public ResponseEntity<SubscriptionDTO> getSubscription(@PathVariable UUID uuid) {
+        return ResponseEntity.ok(toSubscriptionDto(subscriptionService.getByUuid(uuid)));
+    }
+
+    @DeleteMapping("/{uuid}")
+    @Override
+    public ResponseEntity<Void> deleteSubscription(@PathVariable UUID uuid) {
+        subscriptionService.deleteByUuid(uuid);
         return ResponseEntity.ok().build();
     }
 
+    // extract this logic
+    private SubscriptionDTO toSubscriptionDto(Subscription subscription) {
+        return new SubscriptionDTO(
+                subscription.getSubscriptionChannel().toString(),
+                subscription.getUserId(),
+                subscription.getCategories().stream()
+                        .map(Category::getName)
+                        .collect(Collectors.toSet()),
+                subscription.getFormats().stream()
+                        .map(Format::getName)
+                        .collect(Collectors.toSet()),
+                subscription.getIsAsap()
+        );
+    }
 
     // extract this logic
     public Subscription toSubscription(SubscriptionDTO subscriptionDTO) {
