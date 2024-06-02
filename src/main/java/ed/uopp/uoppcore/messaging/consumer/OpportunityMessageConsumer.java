@@ -12,22 +12,22 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
-//@Component
+@Component
 public class OpportunityMessageConsumer {
 
-//    private final OpportunityMessageProcessor opportunityMessageProcessor;
-//
-//    @Retryable(retryFor = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 1000))
-//    @RabbitListener(queues = "${application.rabbitmq.processed-queue}")
-//    public void consume(FullMessageDTO message) {
-//        log.info("Received message: {}", message);
-//
-//        opportunityMessageProcessor.processOpportunityMessage(message);
-//    }
-//
-//    @Recover
-//    public void recover(Exception ex) {
-//        log.error("Failed to process");
-//    }
+    private final OpportunityMessageProcessor opportunityMessageProcessor;
+
+    @Retryable(retryFor = Exception.class, maxAttempts = 2, backoff = @Backoff(delay = 1000))
+    @RabbitListener(queues = "${application.rabbitmq.processed-queue}")
+    public void consume(FullMessageDTO message) {
+        log.info("Received message: {}", message);
+
+        opportunityMessageProcessor.processOpportunityMessage(message);
+    }
+
+    @Recover
+    public void recover(Exception ex) {
+        log.error("Failed to process");
+    }
 
 }

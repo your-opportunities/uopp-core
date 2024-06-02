@@ -20,5 +20,5 @@ public interface OpportunityService {
 
     OpportunityStatus updateStatus(UUID uuid, OpportunityStatus opportunityStatus);
 
-    List<Opportunity> getOpportunitiesCreatedAfter(LocalDateTime fiveMinutesAgo);
+    List<Opportunity> getOpportunitiesUpdatedAfter(LocalDateTime dateTimeThreshold);
 }

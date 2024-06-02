@@ -1,11 +1,10 @@
 package ed.uopp.uoppcore.messaging.processor.impl;
 
 import ed.uopp.uoppcore.data.mq.FullMessageDTO;
-import ed.uopp.uoppcore.entity.OpportunityStatus;
-import ed.uopp.uoppcore.entity.Category;
-import ed.uopp.uoppcore.entity.Format;
-import ed.uopp.uoppcore.entity.Opportunity;
+import ed.uopp.uoppcore.entity.*;
 import ed.uopp.uoppcore.messaging.processor.OpportunityMessageProcessor;
+import ed.uopp.uoppcore.security.data.User;
+import ed.uopp.uoppcore.security.service.UserService;
 import ed.uopp.uoppcore.service.CategoryService;
 import ed.uopp.uoppcore.service.FormatService;
 import ed.uopp.uoppcore.service.NotificationService;
@@ -15,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,16 +30,19 @@ public class DefaultOpportunityMessageProcessor implements OpportunityMessagePro
     private final FormatService formatService;
     private final OpportunityService opportunityService;
     private final NotificationService notificationService;
+    private final UserService userService;
 
     @Override
     public void processOpportunityMessage(FullMessageDTO fullMessageDTO) {
         Opportunity opportunity = convertToOpportunity(fullMessageDTO);
         Opportunity savedOpportunity = opportunityService.save(opportunity);
-        log.info("Processed and saved opportunity");
 
-//        TODO: functionality for moderator to approve opportunity
-        notificationService.notifyOnOpportunityCreation();
-//        log.info("Notified moderator with a new approval request");
+        log.info("Processed and saved opportunity. Going to notify moderators");
+
+        List<User> moderators = userService.getAllModerators();
+        moderators.forEach(
+                moderator -> notificationService.notifyOnOpportunity(SubscriptionChannel.EMAIL, null, moderator.getEmail(), savedOpportunity)
+        );
     }
 
 

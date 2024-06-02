@@ -10,6 +10,7 @@ import ed.uopp.uoppcore.repository.OpportunityRepository;
 import ed.uopp.uoppcore.service.OpportunityService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class DefaultOpportunityService implements OpportunityService {
@@ -45,6 +47,7 @@ public class DefaultOpportunityService implements OpportunityService {
                 .collect(Collectors.toSet());
         opportunity.setFormats(managedFormats);
 
+        log.info("Saved opportunity with uuid '{}'", opportunity.getUuid());
         return opportunityRepository.save(opportunity);
     }
 
@@ -63,13 +66,16 @@ public class DefaultOpportunityService implements OpportunityService {
         Opportunity opportunity = opportunityRepository.findByUuid(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("Opportunity not found!"));
         opportunity.setOpportunityStatus(opportunityStatus);
+
+        opportunity.setStatusUpdateDatetime(LocalDateTime.now());
+
         opportunityRepository.save(opportunity);
         return opportunity.getOpportunityStatus();
     }
 
     @Override
-    public List<Opportunity> getOpportunitiesCreatedAfter(LocalDateTime fiveMinutesAgo) {
-        return opportunityRepository.findByCreatedDatetimeAfterAndOpportunityStatus(fiveMinutesAgo, OpportunityStatus.APPROVED);
+    public List<Opportunity> getOpportunitiesUpdatedAfter(LocalDateTime dateTimeThreshold) {
+        return opportunityRepository.findByStatusUpdateDatetimeAfterAndOpportunityStatus(dateTimeThreshold, OpportunityStatus.APPROVED);
     }
 
 }

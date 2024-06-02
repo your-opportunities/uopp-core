@@ -67,6 +67,9 @@ public class Opportunity {
     private OpportunityStatus opportunityStatus;
 
     @Column
+    private LocalDateTime statusUpdateDatetime;
+
+    @Column
     private LocalDateTime createdDatetime;
 
     @PrePersist

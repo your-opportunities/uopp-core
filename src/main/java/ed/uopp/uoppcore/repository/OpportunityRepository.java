@@ -66,7 +66,6 @@ public interface OpportunityRepository extends JpaRepository<Opportunity, Long>,
 
     Optional<Opportunity> findByUuid(UUID uuid);
 
-    List<Opportunity> findByCreatedDatetimeAfterAndOpportunityStatus(LocalDateTime createdAfter, OpportunityStatus status);
-
+    List<Opportunity> findByStatusUpdateDatetimeAfterAndOpportunityStatus(LocalDateTime secondsAgo, OpportunityStatus status);
 
 }

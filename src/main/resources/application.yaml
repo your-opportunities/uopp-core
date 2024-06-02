@@ -30,7 +30,9 @@ application:
       email: email-key
       telegram: telegram-key
   jobs:
-    subscriptionJobEnabled: false
+    subscriptionJob:
+      enabled: true
+      intervalInSeconds: 30
 
 springdoc:
   api-docs:

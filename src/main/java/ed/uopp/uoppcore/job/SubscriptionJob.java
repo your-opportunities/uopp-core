@@ -7,6 +7,7 @@ import ed.uopp.uoppcore.service.OpportunityService;
 import ed.uopp.uoppcore.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -18,23 +19,24 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @ConditionalOnProperty(
-        value="application.jobs.subscriptionJobEnabled",
+        value = "application.jobs.subscriptionJob.enabled",
         havingValue = "true",
         matchIfMissing = true)
 @Component
 public class SubscriptionJob {
 
+    @Value("${application.jobs.subscriptionJob.intervalInSeconds}")
+    private Long intervalInSeconds;
     private final SubscriptionService subscriptionService;
     private final OpportunityService opportunityService;
     private final NotificationService notificationService;
 
-    @Scheduled(fixedRate = 10000) // todo: should be updated, only for testing
+    @Scheduled(fixedRateString = "#{${application.jobs.subscriptionJob.intervalInSeconds} * 1000}")
     public void checkSubscriptions() {
         log.info("Job started");
         List<Subscription> subscriptions = subscriptionService.getAll();
-        LocalDateTime fiveMinutesAgo = LocalDateTime.now().minusHours(1L); // todo: should be updated, only for testing
-        List<Opportunity> opportunities = opportunityService.getOpportunitiesCreatedAfter(fiveMinutesAgo);
-
+        LocalDateTime dateTimeThreshold = LocalDateTime.now().minusSeconds(intervalInSeconds);
+        List<Opportunity> opportunities = opportunityService.getOpportunitiesUpdatedAfter(dateTimeThreshold);
 
         for (Subscription subscription : subscriptions) {
             for (Opportunity opportunity : opportunities) {
@@ -43,7 +45,6 @@ public class SubscriptionJob {
                 boolean hasMatchingFormat = Collections.disjoint(opportunity.getFormats(), subscription.getFormats());
 
                 if ((hasMatchingCategory && hasMatchingFormat && opportunity.getIsAsap().equals(subscription.getIsAsap()))) {
-                    // todo: do not notify user two times
                     notifyUser(subscription, opportunity);
                 }
             }
@@ -53,7 +54,8 @@ public class SubscriptionJob {
     }
 
     private void notifyUser(Subscription subscription, Opportunity opportunity) {
-        log.info("USER WAS NOTIFIED");
-        notificationService.notifyOnOpportunityCreation();
+        log.info("User userId = '{}' was notified though channel = '{}' with opportunity uuid = '{}'",
+                subscription.getUserId(), subscription.getSubscriptionChannel(), opportunity.getUuid());
+        notificationService.notifyOnOpportunity(subscription.getSubscriptionChannel(), subscription.getUuid(), subscription.getUserId(), opportunity);
     }
 }
