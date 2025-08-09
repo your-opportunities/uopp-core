@@ -10,26 +10,33 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
+      - postgres
+      - rabbitmq
 
-  mysql:
-    container_name: uopp-core-mysql
-    image: mysql:8.0.33
+  postgres:
+    container_name: uopp-core-postgres
+    image: postgres:15-alpine
     restart: unless-stopped
     environment:
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: uopp_core_database
+      POSTGRES_DB: uopp_core_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
+      - postgres_data:/var/lib/postgresql/data
       - ./data/sql-init/db_dump.sql:/docker-entrypoint-initdb.d/db_dump.sql
 
   rabbitmq:
+    container_name: uopp-core-rabbitmq
     image: rabbitmq:3-management
+    restart: unless-stopped
     ports:
       - "5672:5672"
       - "15672:15672"
     environment:
-      RABBITMQ_DEFAULT_USER: "user"
-      RABBITMQ_DEFAULT_PASS: "password"
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+
+volumes:
+  postgres_data:

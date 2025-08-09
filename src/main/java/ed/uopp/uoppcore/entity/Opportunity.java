@@ -45,7 +45,7 @@ public class Opportunity {
     @Column(nullable = false)
     private Boolean isAsap;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String description;
 
     @Column(nullable = false)

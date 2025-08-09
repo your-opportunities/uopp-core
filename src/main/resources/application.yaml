@@ -2,22 +2,30 @@ spring:
   application:
     name: uopp-core
   rabbitmq:
-    host: localhost
+    host: rabbitmq
     port: 5672
-    username: user
-    password: password
+    username: guest
+    password: guest
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql:3306/uopp_core_database
-    username: root
-    password: root
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/uopp_core_database
+    username: postgres
+    password: postgres
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: false
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 application:
+  url: http://localhost:8080
+  cors:
+    allowed-origins:
+      - http://localhost:8081
+      - http://localhost:8082
   rabbitmq:
     processed-queue: processed_message_queue
     consumer:

@@ -9,6 +9,7 @@ import ed.uopp.uoppcore.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -21,6 +22,9 @@ import java.util.stream.Collectors;
 public class DefaultNotificationService implements NotificationService {
 
     private final NotificationProducer notificationProducer;
+
+    @Value("${application.url}")
+    private String applicationUrl;
 
     @Override
     public void notifyOnOpportunity(SubscriptionChannel subscriptionChannel, UUID uuid, String userId, Opportunity opportunity) {
@@ -46,7 +50,7 @@ public class DefaultNotificationService implements NotificationService {
                 + "\n\n**Формат**: " + formatSetToString(opportunity.getFormats())
                 + "\n\n**Терміновість**: " + getAsapText(opportunity.getIsAsap())
                 + "\n\n**Текст з джерела**:\n\n" + opportunity.getDescription();
-        String opportunityLink = "http://localhost:8080/opportunities/" + opportunity.getUuid();
+        String opportunityLink = applicationUrl + "/opportunities/" + opportunity.getUuid();
         String opportunitySourceLink = opportunity.getSourceLink();
 
         return new NotificationDTO(

@@ -5,9 +5,7 @@ import ed.uopp.uoppcore.security.jwt.JwtAccessDeniedHandler;
 import ed.uopp.uoppcore.security.jwt.JwtAuthenticationEntryPoint;
 import ed.uopp.uoppcore.security.jwt.JwtAuthorizationFilter;
 import ed.uopp.uoppcore.security.service.UserService;
-import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +23,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
+
 import static ed.uopp.uoppcore.security.constant.SecurityConstant.MODERATOR_URLS;
 import static ed.uopp.uoppcore.security.constant.SecurityConstant.PUBLIC_URLS;
 
@@ -36,6 +36,7 @@ public class WebSecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final UserService userService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -65,14 +66,12 @@ public class WebSecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:8081/");
-        config.addAllowedOrigin("http://localhost:8082/");
+        config.setAllowedOrigins(Arrays.asList("http://localhost:8081", "http://localhost:8082"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
